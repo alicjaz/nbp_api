@@ -15,10 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-
+from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
     path('api/avg_exchange_rate/<str:currency_code>/<str:date>/', views.avg_exchange_rate, name='avg_exchange_rate'),
     path('api/min_max_average/<str:currency_code>/<int:n>/', views.min_max_average, name='min_max_average'),
+    path('api/buy_sell_difference/<str:currency_code>/<int:n>/', views.buy_sell_difference, name='buy_sell_difference'),
+    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('<path:path>', TemplateView.as_view(template_name='index.html'), name='catchall'),
 ]

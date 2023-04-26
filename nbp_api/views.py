@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import requests
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -70,3 +71,34 @@ def min_max_average(request, currency_code, n):
     # If the request method is not GET, return an error message as a JSON response
     return JsonResponse({'error': 'Only GET requests are allowed'}, status=405)
 
+
+@require_http_methods(['GET'])
+def buy_sell_difference(request, currency_code, n):
+    if request.method == 'GET':
+        url = f"https://api.nbp.pl/api/exchangerates/rates/c/{currency_code}/last/{n}/?format=json"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            data = response.json()
+            rates = data["rates"]
+            differences = {}
+            for rate in rates:
+                date = rate["effectiveDate"]
+                ask_rate = rate["ask"]
+                bid_rate = rate["bid"]
+                difference = ask_rate - bid_rate
+                differences[date] = difference
+
+            max_difference_date = max(differences, key=differences.get)
+            min_difference_date = min(differences, key=differences.get)
+
+            return JsonResponse({
+                "max_difference_date": max_difference_date,
+                "max_difference": differences[max_difference_date],
+                "min_difference_date": min_difference_date,
+                "min_difference": differences[min_difference_date]
+            })
+        else:
+            return JsonResponse({"error": "Error retrieving data from NBP API."}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid HTTP method."}, status=405)

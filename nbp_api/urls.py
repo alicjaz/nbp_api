@@ -14,10 +14,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
     path('api/avg_exchange_rate/<str:currency_code>/<str:date>/', views.avg_exchange_rate, name='avg_exchange_rate'),
+    path('api/min_max_average/<str:currency_code>/<int:n>/', views.min_max_average, name='min_max_average'),
 ]

@@ -53,3 +53,29 @@ class MinMaxAverageTestCase(TestCase):
         # Assert that the expected keys are present in the response data
         for key in self.expected_keys:
             self.assertIn(key, data)
+
+
+# Test case for buy sell difference API
+class BuySellDifferenceTestCase(TestCase):
+    def setUp(self):
+        # Create a test client to simulate HTTP requests
+        self.client = Client()
+        # Set the default input parameters for the API
+        self.currency_code = 'USD'
+        self.n = 5
+
+    def test_buy_sell_difference(self):
+        # Construct the URL for the API endpoint with the input parameters
+        url = reverse('buy_sell_difference', args=[self.currency_code, self.n])
+        # Send a GET request to the API endpoint with the constructed URL
+        response = self.client.get(url)
+
+        # Check if the response status code is 200 (OK)
+        self.assertEqual(response.status_code, 200)
+        # Convert the response data from JSON to a Python dictionary
+        data = response.json()
+        # Check if the dictionary contains the expected keys
+        self.assertIn('max_difference_date', data)
+        self.assertIn('max_difference', data)
+        self.assertIn('min_difference_date', data)
+        self.assertIn('min_difference', data)

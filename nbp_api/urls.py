@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('api/avg_exchange_rate/<str:currency_code>/<str:date>/', views.avg_exchange_rate, name='avg_exchange_rate'),
 ]
